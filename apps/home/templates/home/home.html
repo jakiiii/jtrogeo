@@ -1,5 +1,61 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="display-1 text-center">GEO DJANGO</h1>
+    <style>
+    #map{
+        width: 100%;
+        height: 700px;
+    }
+    </style>
+
+    <div id="map"></div>
+    <button onclick="fullScreenView()">View in full screen</button>
+    <div class="coordinate"></div>
+    <button class="print-map">Print map</button>
+
+
+    <script>
+        var map = L.map('map').setView([23.8103, 90.4125], 10);
+        map.zoomControl.setPosition('topright');
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        L.marker([23.8103, 90.4125]).addTo(map)
+            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+            .openPopup();
+
+        // add map scale
+        L.control.scale().addTo(map)
+        
+        // full screen map view
+        var mapID = document.getElementById("map");
+        function fullScreenView() {
+            mapID.requestFullscreen();
+        }
+
+        // Map coordinate display
+        map.on('mousemove', function (e) {
+            $('.coordinate').html(`Lat: ${e.latlng.lat}, Lng: ${e.latlng.lng}`)
+        });
+
+        // Map print
+        $('.print-map').click(function () {
+            window.print()
+        });
+
+        // Leaflet browser print function
+        // https://github.com/Igor-Vladyka/leaflet.browser.print#usage
+        L.control.browserPrint().addTo(map);
+
+        // Leaflet measure
+        L.control.measure({
+            position: 'topright',
+            primaryLengthUnit: 'kilometers',
+            secondaryLengthUnit: 'miles',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'sqmiles',
+        }).addTo(map);
+    </script>
 {% endblock %}
