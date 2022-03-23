@@ -1,0 +1,24 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}jTro - Django Scripts{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    {% include 'base/css.html' %}
+</head>
+<body>
+{% include 'base/navbar.html' %}
+
+<div class="container" style="padding-top: 2rem;">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Optional JavaScript; choose one of the two! -->
+{% include 'base/js.html' %}
+
+</body>
+</html>
