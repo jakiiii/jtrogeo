@@ -20,6 +20,12 @@
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
 
 <!--
+leaflet basemap provider
+-->
+<script src="{% static 'css/gh-fork-ribbon.css' %}"></script>
+<script src="{% static 'js/leaflet-providers.js' %}"></script>
+
+<!--
 Map Print Plugin for Leaflet.js
 https://github.com/Igor-Vladyka/leaflet.browser.print
 -->
@@ -33,3 +39,20 @@ https://github.com/ljagis/leaflet-measure
 <script src="{% static 'css/leaflet-measure.css' %}" ></script>
 <script src="{% static 'js/leaflet-measure.js' %}" ></script>
 {#<script src="http://ljagis.github.io/leaflet-measure/leaflet-measure.css" ></script>#}
+
+<!--
+markercluster
+https://github.com/Leaflet/Leaflet.markercluster
+-->
+<link href="{% static 'markercluster/MarkerCluster.css' %}" rel="stylesheet">
+<link href="{% static 'markercluster/MarkerCluster.Default.css' %}" rel="stylesheet">
+
+<script src="{% static 'markercluster/leaflet.markercluster.js' %}" ></script>
+<script src="{% static 'markercluster/leaflet.markercluster-src.js' %}" ></script>
+
+<!--
+Leaflet Geocoder
+https://github.com/perliedman/leaflet-control-geocoder
+-->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>

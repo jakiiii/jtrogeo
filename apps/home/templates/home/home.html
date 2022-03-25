@@ -1,36 +1,57 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
+    <!-- static/data/test.js -->
+    <script src="{% static 'data/test.js' %}"></script>
+
     <style>
-    #map{
-        width: 100%;
-        height: 700px;
-    }
+        #map {
+            width: 100%;
+            height: 700px;
+        }
     </style>
 
     <div id="map"></div>
     <button onclick="fullScreenView()">View in full screen</button>
     <div class="coordinate"></div>
     <button class="print-map">Print map</button>
+    <button class="zoom-to-layer">Zoom to Layer</button>
 
 
     <script>
-        var map = L.map('map').setView([23.8103, 90.4125], 10);
+        {#var map = L.map('map').setView([23.8103, 90.4125], 10);#}
+        var map = L.map('map').setView([38.8610, 71.2761], 7);
         map.zoomControl.setPosition('topright');
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // adding osm tilelayer
+        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        L.marker([23.8103, 90.4125]).addTo(map)
+        var waterColorMap = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
+            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            subdomains: 'abcd',
+            minZoom: 1,
+            maxZoom: 16,
+            ext: 'jpg'
+        });
+
+        var streetMap = L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
+            maxZoom: 18,
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        var singleMarket = L.marker([38.8610, 71.2761])
             .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
             .openPopup();
 
         // add map scale
-        L.control.scale().addTo(map)
-        
+        L.control.scale().addTo(map);
+
         // full screen map view
         var mapID = document.getElementById("map");
+
         function fullScreenView() {
             mapID.requestFullscreen();
         }
@@ -57,5 +78,37 @@
             primaryAreaUnit: 'sqmeters',
             secondaryAreaUnit: 'sqmiles',
         }).addTo(map);
+
+        // loadjson data
+        var marker = L.markerClusterGroup();
+        var taji = L.geoJSON(data, {
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties.name);
+            }
+        });
+        taji.addTo(marker);
+        {#marker.addTo(map);#}
+
+        // leaflet geocoder search
+        L.Control.geocoder().addTo(map);
+
+        // Leaflef layer control
+        var baseMap = {
+            'OSM': osm,
+            'Water Color Map': waterColorMap,
+            'Street Map': streetMap,
+        };
+
+        var overLayMaps = {
+            'GeoJSON Markets': marker,
+            'Single Market': singleMarket,
+        };
+
+        L.control.layers(baseMap, overLayMaps).addTo(map);
+
+        // zoom to layer
+        $('.zoom-to-layer').click(function () {
+            map.setView([38.8610, 71.2761], 7)
+        })
     </script>
 {% endblock %}
