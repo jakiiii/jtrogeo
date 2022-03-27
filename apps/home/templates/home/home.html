@@ -4,111 +4,57 @@
 {% block content %}
     <!-- static/data/test.js -->
     <script src="{% static 'data/test.js' %}"></script>
-
     <style>
-        #map {
-            width: 100%;
-            height: 700px;
+        .map-coordinate{
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translate(-50%);
+            padding: 8px;
+            background-color: #e1f3f5;
+            border: 1px solid #a0bee8;
+            border-radius: 2%;
+        }
+
+        .full-screen{
+            position: absolute;
+            padding: 5px;
+            color: #000;
+            background-color: #fff;
+            right: 12px;
+            top: 215px;
+        }
+
+        .zoom-to-layer{
+            position: absolute;
+            padding: 5px;
+            color: #000;
+            background-color: #fff;
+            right: 12px;
+            top: 255px;
         }
     </style>
 
-    <div id="map"></div>
-    <button onclick="fullScreenView()">View in full screen</button>
-    <div class="coordinate"></div>
-    <button class="print-map">Print map</button>
+    <div id="map">
+
+        <!-- coordinate -->
+        <div class="leaflet-control map-coordinate">
+            <div class="coordinate"></div>
+        </div>
+
+        <!-- full screen -->
+        <div class="leaflet-control full-screen" onclick="fullScreenView()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" fill="currentColor" class="bi bi-arrows-fullscreen" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M5.828 10.172a.5.5 0 0 0-.707 0l-4.096 4.096V11.5a.5.5 0 0 0-1 0v3.975a.5.5 0 0 0 .5.5H4.5a.5.5 0 0 0 0-1H1.732l4.096-4.096a.5.5 0 0 0 0-.707zm4.344 0a.5.5 0 0 1 .707 0l4.096 4.096V11.5a.5.5 0 1 1 1 0v3.975a.5.5 0 0 1-.5.5H11.5a.5.5 0 0 1 0-1h2.768l-4.096-4.096a.5.5 0 0 1 0-.707zm0-4.344a.5.5 0 0 0 .707 0l4.096-4.096V4.5a.5.5 0 1 0 1 0V.525a.5.5 0 0 0-.5-.5H11.5a.5.5 0 0 0 0 1h2.768l-4.096 4.096a.5.5 0 0 0 0 .707zm-4.344 0a.5.5 0 0 1-.707 0L1.025 1.732V4.5a.5.5 0 0 1-1 0V.525a.5.5 0 0 1 .5-.5H4.5a.5.5 0 0 1 0 1H1.732l4.096 4.096a.5.5 0 0 1 0 .707z"/>
+            </svg>
+        </div>
+
+        <!-- zoom to layer -->
+        <div class="leaflet-control zoom-to-layer">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1.3rem" height="1.3rem" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5z"/>
+            </svg>
+        </div>
+    </div>
     <button class="zoom-to-layer">Zoom to Layer</button>
-
-
-    <script>
-        {#var map = L.map('map').setView([23.8103, 90.4125], 10);#}
-        var map = L.map('map').setView([38.8610, 71.2761], 7);
-        map.zoomControl.setPosition('topright');
-
-        // adding osm tilelayer
-        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var waterColorMap = L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.{ext}', {
-            attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-            subdomains: 'abcd',
-            minZoom: 1,
-            maxZoom: 16,
-            ext: 'jpg'
-        });
-
-        var streetMap = L.tileLayer('https://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
-            maxZoom: 18,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        });
-
-        var singleMarket = L.marker([38.8610, 71.2761])
-            .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-            .openPopup();
-
-        // add map scale
-        L.control.scale().addTo(map);
-
-        // full screen map view
-        var mapID = document.getElementById("map");
-
-        function fullScreenView() {
-            mapID.requestFullscreen();
-        }
-
-        // Map coordinate display
-        map.on('mousemove', function (e) {
-            $('.coordinate').html(`Lat: ${e.latlng.lat}, Lng: ${e.latlng.lng}`)
-        });
-
-        // Map print
-        $('.print-map').click(function () {
-            window.print()
-        });
-
-        // Leaflet browser print function
-        // https://github.com/Igor-Vladyka/leaflet.browser.print#usage
-        L.control.browserPrint().addTo(map);
-
-        // Leaflet measure
-        L.control.measure({
-            position: 'topright',
-            primaryLengthUnit: 'kilometers',
-            secondaryLengthUnit: 'miles',
-            primaryAreaUnit: 'sqmeters',
-            secondaryAreaUnit: 'sqmiles',
-        }).addTo(map);
-
-        // loadjson data
-        var marker = L.markerClusterGroup();
-        var taji = L.geoJSON(data, {
-            onEachFeature: function (feature, layer) {
-                layer.bindPopup(feature.properties.name);
-            }
-        });
-        taji.addTo(marker);
-        {#marker.addTo(map);#}
-
-        // leaflet geocoder search
-        L.Control.geocoder().addTo(map);
-
-        // Leaflef layer control
-        var baseMap = {
-            'OSM': osm,
-            'Water Color Map': waterColorMap,
-            'Street Map': streetMap,
-        };
-
-        var overLayMaps = {
-            'GeoJSON Markets': marker,
-            'Single Market': singleMarket,
-        };
-
-        L.control.layers(baseMap, overLayMaps).addTo(map);
-
-        // zoom to layer
-        $('.zoom-to-layer').click(function () {
-            map.setView([38.8610, 71.2761], 7)
-        })
-    </script>
 {% endblock %}
