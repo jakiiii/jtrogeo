@@ -29,3 +29,6 @@
 * Map scale
 * Map coordinate
 * Marker cluster
+
+
+**Start Geo Server (Linux Debian)** ``sh /usr/share/geoserver/bin/startup.sh``
